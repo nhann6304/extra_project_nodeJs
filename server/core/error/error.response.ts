@@ -1,12 +1,17 @@
 import { ReasonPhrases, StatusCodes } from "http-status-codes";
 import { OK } from "../success/success.reponse";
+import { Response } from "express";
 
 class CustomErrorApi extends Error {
-    message: string;
     statusCode: number;
     reasonStatusCode: string;
-    constructor({ message }: Error) {
+
+    constructor(message: string) {
         super(message);
+    }
+
+    send(res: Response) {
+        return res.status(this.statusCode).json({ ...this, message: this.message });
     }
 }
 // Không tồn tại 404
