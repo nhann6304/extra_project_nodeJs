@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import validator from "validator";
 import { IUser } from "../interface/user.interface";
 import { ERole } from "../enums/role.enum";
-import { PasswordConfig } from "../helper/hashPassword.help";
+import { PasswordConfig } from "../helper/hashPassword.helper";
 
 export const userSchema = new mongoose.Schema<IUser>({
     user_name: {
@@ -46,7 +46,7 @@ userSchema.pre("save", async function () {
     this.user_pass = await PasswordConfig.hashPassword(this.user_pass)
 })
 
-userSchema.methods.comparePassword = async function (pass_ma_hoa) {
+userSchema.methods.comparePassword = async function (pass_ma_hoa: string) {
     const isMatch = await PasswordConfig.comparePassword(pass_ma_hoa, this.password);
     return isMatch
 }

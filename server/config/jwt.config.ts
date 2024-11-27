@@ -1,7 +1,7 @@
 import { JwtPayload, sign, verify } from "jsonwebtoken";
 
 
-class JwtConfig {
+export class JwtConfig {
     static SignJWT<T extends object>(payload: T): string {
         const token = sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_TIME });
         return token;
