@@ -8,10 +8,9 @@ import { reduceEachTrailingCommentRange } from "typescript";
 import { PasswordConfig } from "../helper/hashPassword.helper";
 import { JwtConfig } from "../config/jwt.config";
 import { CookieConfig } from "../helper/cookie.config.helper";
+import { CustomRequest } from "../interface/request.interface";
 
 const userRepository = mongoose.model<IUser>("Users", userSchema);
-
-
 export const register = async (req: Request<{}, {}, IUser, {}>, res: Response, next: NextFunction) => {
     try {
         const { user_email, ...data } = req.body;
@@ -65,6 +64,7 @@ export const login = async (req: Request<{}, {}, IUser, {}>, res: Response, next
         const token = JwtConfig.SignJWT(payload);
         // Đăng ký cookie
         CookieConfig.createCookie({ res, token })
+
         // lấy thông tin user mà bỏ password ra
         const user = await userRepository.findById(items._id).select("-user_pass")
         new OK({
@@ -90,3 +90,51 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
         message: "logout",
     });
 };
+
+
+export const getMe = async (req: Request, res: Response, next: NextFunction) => {
+    const cookie = req.cookies;
+    console.log(cookie);
+    const result = JwtConfig.decodeJWT<Pick<IUser, "_id">>(cookie.token);
+    const user = await userRepository.findOne({ _id: result._id }).select("-user_pass")
+    new OK({
+        message: "Get me Success",
+        metadata: user
+    }).send(res)
+    try {
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const updateMe = async (req: CustomRequest<{}, {}, Omit<IUser, "user_pass">, {}>, res: Response, next: NextFunction) => {
+    const { ...data } = req.body;
+    const result = await userRepository.findByIdAndUpdate({ _id: req.user._id }, { ...data }, { new: true })
+    new OK({
+        message: "Update user success!!! ",
+        metadata: result
+    }).send(res)
+}
+
+export const changePassword = async (req: CustomRequest<{}, {}, { oldPassword: string, newPassword: string }, {}>, res: Response, next: NextFunction) => {
+    const { newPassword, oldPassword } = req.body;
+    if (!newPassword || !oldPassword) {
+        new Error.BadRequestError({ message: "Nhập thiếu value!!!" });
+    }
+    const user = await userRepository.findOne({ _id: req.user._id });
+
+    const isCheckPassword = await PasswordConfig.comparePassword(user.user_pass, oldPassword);
+    if (!isCheckPassword) {
+        new Error.UnauthenticatedError({ message: "Sai mật khẩu" }).send(res);
+        return;
+    }
+
+    const passNew = await PasswordConfig.hashPassword(newPassword);
+
+    const newUser = await userRepository.findByIdAndUpdate({ _id: user._id }, { user_pass: passNew }, { new: true })
+
+    new OK({
+        message: "Change Password success!!!",
+        metadata: newUser
+    }).send(res)
+}

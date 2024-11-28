@@ -8,12 +8,12 @@ import mainRouter from "./routes/index";
 import { connectDb } from "./config/mongoose.config";
 import { errorHandlerMiddleware, notFoundMiddleware } from "./middleware/errorHandler.middleware";
 import cookieParser from "cookie-parser";
-import { authMiddleware } from "./middleware/auth.middleware";
 
 const server = express();
 const PORT = 8000
 
 // Config
+server.use(cookieParser())
 server.use(express.json());
 server.use(morgan("dev"));
 server.use(helmet());
@@ -23,8 +23,6 @@ server.use("/api/v1/", mainRouter);
 //middleware 
 server.use(notFoundMiddleware)
 server.use(errorHandlerMiddleware)
-server.use(cookieParser())
-server.use(authMiddleware)
 server.use(cors())
 
 const start = async () => {
