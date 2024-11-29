@@ -1,6 +1,7 @@
 import { IUser } from "./user.interface";
 
 export interface IProduct {
+    _id: string;
     prod_name: string,
     prod_price: number;
     prod_description: string;

@@ -10,7 +10,7 @@ export const roleMiddleware = (...role: any) => {
     //     });
     // }
     return (req: CustomRequest, res: Response, next: NextFunction) => {
-        console.log(req.user);
+        // console.log(req.user);
         if (!role.includes(req.user.role)) {
             throw new Error.UnavailableError({
                 message: "Bạn không đủ quyền để thực hiện thao tác"

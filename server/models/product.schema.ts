@@ -63,5 +63,13 @@ export const ProductSchema = new mongoose.Schema<IProduct>({
         required: false,
     }
 },
-    { timestamps: true }
-)
+    { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
+);
+
+ProductSchema.virtual("reviews", {
+    ref: "Reviews",  // Tham chiếu đến model nào
+    localField: "_id", // dựa vào gì mà truy vấn
+    foreignField: "product", // Truy vấn theo 
+    justOne: false, // lấy 1 hay nhièu
+    // match // điều kiện truy vấn ví dụ ratting ===1
+})

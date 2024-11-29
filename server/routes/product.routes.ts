@@ -7,10 +7,10 @@ import { ERole } from "../enums/role.enum";
 const router = express.Router();
 
 router.use(authMiddleware);
+router.get("/find", ProductController.find)
 router.use(roleMiddleware(ERole.ADMIN, "none"));
 router.post("/create", ProductController.create)
-router.get("/find", ProductController.find)
-router.get("/update", ProductController.update)
-router.get("/deleted", ProductController.deleted)
+router.patch("/update", ProductController.update)
+router.delete("/deleted", ProductController.deleted)
 
 export default router
