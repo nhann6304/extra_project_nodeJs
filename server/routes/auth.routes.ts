@@ -9,7 +9,7 @@ router.post("/login", AuthController.login)
 router.post("/register", AuthController.register)
 router.use(authMiddleware);
 router.get("/get-me", AuthController.getMe)
-router.get("/update-me", AuthController.updateMe)
+router.post("/update-me", AuthController.updateMe)
 router.post("/change-password", AuthController.changePassword)
 router.get("/logout", AuthController.logout)
 

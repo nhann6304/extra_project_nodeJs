@@ -107,8 +107,11 @@ export const getMe = async (req: Request, res: Response, next: NextFunction) => 
     }
 }
 
-export const updateMe = async (req: CustomRequest<{}, {}, Omit<IUser, "user_pass">, {}>, res: Response, next: NextFunction) => {
+export const updateMe = async (req: CustomRequest<{}, {}, IUser, {}>, res: Response, next: NextFunction) => {
     const { ...data } = req.body;
+    delete data.role;
+    delete data.user_pass;
+
     const result = await userRepository.findByIdAndUpdate({ _id: req.user._id }, { ...data }, { new: true })
     new OK({
         message: "Update user success!!! ",
