@@ -1,7 +1,8 @@
+import mongoose from "mongoose";
 import { IUser } from "./user.interface";
 
 export interface IProduct {
-    _id: string;
+    _id: mongoose.Types.ObjectId;
     prod_name: string,
     prod_price: number;
     prod_description: string;

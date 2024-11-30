@@ -8,6 +8,7 @@ import mainRouter from "./routes/index";
 import { connectDb } from "./config/mongoose.config";
 import { errorHandlerMiddleware, notFoundMiddleware } from "./middleware/errorHandler.middleware";
 import cookieParser from "cookie-parser";
+import rateLimit from "express-mongo-sanitize";
 
 const server = express();
 const PORT = 8000

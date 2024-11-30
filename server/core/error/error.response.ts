@@ -21,6 +21,7 @@ class CustomErrorApi extends Error {
 export class NotFoundError extends CustomErrorApi {
     constructor({ message }) {
         super(message);
+        console.log("check:::", message);
         this.statusCode = StatusCodes.NOT_FOUND;
         this.reasonStatusCode = ReasonPhrases.NOT_FOUND
     }
